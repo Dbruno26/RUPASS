@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R.U. PASS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --verde-ufam: #1B4D3E;
+      --verde-hover: #14503d;
+      --branco: #FFFFFF;
+      --cinza-claro: #f0f0f0;
+      --erro: #ff4d4d;
+      --valido: #4CAF50;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--cinza-claro);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      padding: 1rem;
+    }
+
+    .container {
+      background-color: var(--branco);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1, h2, h3 {
+      color: var(--verde-ufam);
+      text-align: center;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 1rem 0;
+      border-radius: 0.5rem;
+      border: 2px solid #ccc;
+      transition: border-color 0.3s ease;
+    }
+
+    button {
+      padding: 1rem;
+      background-color: var(--verde-ufam);
+      color: var(--branco);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s, color 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: var(--verde-hover);
+      color: var(--branco);
+    }
+
+    .accordion {
+      background-color: var(--branco);
+      color: var(--verde-ufam);
+      cursor: pointer;
+      padding: 1rem;
+      width: 100%;
+      text-align: center;
+      border: 2px solid var(--verde-ufam);
+      border-radius: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .accordion.active {
+      background-color: var(--verde-ufam);
+      color: var(--branco);
+    }
+
+    .panel {
+      padding: 1rem;
+      display: none;
+      background-color: #f9f9f9;
+      overflow: hidden;
+      border-radius: 0 0 0.5rem 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .interface1, .interface2, .interface3, .interface4 {
+      display: none;
+    }
+
+    .ativa {
+      display: block;
+    }
+
+    .ticket-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0.5rem 0;
+    }
+
+    .ticket-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ticket-buttons span {
+      min-width: 2rem;
+      text-align: center;
+    }
+
+    .promo {
+      text-align: center;
+      margin-top: 1rem;
+      background-color: #dfeeea;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      color: var(--verde-ufam);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="interface1 ativa" id="interface1">
+      <h1>R.U. PASS</h1>
+      <input type="text" id="entrada" placeholder="Digite seu CPF ou matrícula">
+      <button id="entrarBtn">Entrar</button>
+      <div class="promo">Promoção: compre 10 tickets e ganhe 2!</div>
+    </div>
+
+    <div class="interface2" id="interface2">
+      <button class="accordion" id="meusTicketsBtn">Meus Tickets</button>
+      <div class="panel" id="meusTicketsPanel">
+        <p id="meus-dejejum">Dejejum: 0</p>
+        <p id="meus-almoco">Almoço: 0</p>
+        <p id="meus-janta">Janta: 0</p>
+      </div>
+
+      <button class="accordion" id="comprarBtn">Comprar</button>
+      <div class="panel" id="comprarPanel">
+        <div class="ticket-option">
+          <strong>Dejejum</strong>
+          <div class="ticket-buttons">
+            <button onclick="alterar('dejejum', -1)">-</button>
+            <span id="qtd-dejejum">0</span>
+            <button onclick="alterar('dejejum', 1)">+</button>
+          </div>
+        </div>
+        <div class="ticket-option">
+          <strong>Almoço</strong>
+          <div class="ticket-buttons">
+            <button onclick="alterar('almoco', -1)">-</button>
+            <span id="qtd-almoco">0</span>
+            <button onclick="alterar('almoco', 1)">+</button>
+          </div>
+        </div>
+        <div class="ticket-option">
+          <strong>Janta</strong>
+          <div class="ticket-buttons">
+            <button onclick="alterar('janta', -1)">-</button>
+            <span id="qtd-janta">0</span>
+            <button onclick="alterar('janta', 1)">+</button>
+          </div>
+        </div>
+        <button id="finalizarBtn"><i class="fas fa-shopping-cart"></i> Finalizar Pedido</button>
+      </div>
+    </div>
+
+    <div class="interface3" id="interface3">
+      <h3>Escolha a forma de pagamento</h3>
+      <button onclick="mostrarPix()">Pix</button>
+      <button onclick="mostrarCartao()">Cartão de Crédito</button>
+      <div id="pixDiv" style="display:none;">
+        <p>Chave Pix: <strong id="chavePix">000123abcPIX</strong> <button onclick="copiarPix()">Copiar</button></p>
+        <p id="confirmacaoPix" class="copiado"></p>
+      </div>
+      <div id="cartaoDiv" style="display:none;">
+        <input type="text" placeholder="Número do Cartão">
+        <input type="text" placeholder="Validade (MM/AA)">
+        <input type="text" placeholder="CVV">
+        <button onclick="confirmarCartao()">Pagar</button>
+      </div>
+    </div>
+
+    <div class="interface4" id="interface4">
+      <h2>Compra Aprovada!</h2>
+      <p>Seus tickets foram adicionados à conta.</p>
+      <button onclick="voltarParaTickets()">Ver Tickets</button>
+    </div>
+  </div>
+
+  <script>
+    const entrada = document.getElementById('entrada');
+    const entrarBtn = document.getElementById('entrarBtn');
+    const interfaces = [
+      document.getElementById('interface1'),
+      document.getElementById('interface2'),
+      document.getElementById('interface3'),
+      document.getElementById('interface4')
+    ];
+
+    const finalizarBtn = document.getElementById('finalizarBtn');
+    const meusTicketsPanel = document.getElementById('meusTicketsPanel');
+    const meusTicketsBtn = document.getElementById('meusTicketsBtn');
+    const comprarBtn = document.getElementById('comprarBtn');
+    const comprarPanel = document.getElementById('comprarPanel');
+
+    const counts = { dejejum: 0, almoco: 0, janta: 0 };
+    const meusTickets = { dejejum: 0, almoco: 0, janta: 0 };
+
+    function mudarInterface(index) {
+      interfaces.forEach((el, i) => el.classList.toggle('ativa', i === index));
+    }
+
+    function atualizarMeusTickets() {
+      document.getElementById('meus-dejejum').innerText = `Dejejum: ${meusTickets.dejejum}`;
+      document.getElementById('meus-almoco').innerText = `Almoço: ${meusTickets.almoco}`;
+      document.getElementById('meus-janta').innerText = `Janta: ${meusTickets.janta}`;
+    }
+
+    entrarBtn.addEventListener('click', () => {
+      const val = entrada.value;
+      if (val === '000.000.000-00' || val === '12345678') {
+        mudarInterface(1);
+      } else {
+        entrada.classList.add('erro');
+      }
+    });
+
+    entrada.addEventListener('input', () => {
+      let val = entrada.value.replace(/\D/g, '');
+      if (val.startsWith('0')) {
+        val = val.slice(0, 11);
+        if (val.length > 3) val = val.replace(/(\d{3})(\d)/, '$1.$2');
+        if (val.length > 7) val = val.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+        if (val.length > 11) val = val.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        entrada.value = val;
+      } else if (val.startsWith('1')) {
+        entrada.value = val.slice(0, 8);
+      } else {
+        entrada.value = val.slice(0, 11);
+      }
+    });
+
+    meusTicketsBtn.addEventListener('click', () => {
+      const isActive = meusTicketsBtn.classList.contains('active');
+      document.querySelectorAll('.accordion').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(pnl => pnl.style.display = 'none');
+      if (!isActive) {
+        meusTicketsBtn.classList.add('active');
+        meusTicketsPanel.style.display = 'block';
+      }
+    });
+
+    comprarBtn.addEventListener('click', () => {
+      const isActive = comprarBtn.classList.contains('active');
+      document.querySelectorAll('.accordion').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(pnl => pnl.style.display = 'none');
+      if (!isActive) {
+        comprarBtn.classList.add('active');
+        comprarPanel.style.display = 'block';
+      }
+    });
+
+    function alterar(tipo, delta) {
+      if (counts[tipo] + delta >= 0 && counts[tipo] + delta <= 20) {
+        counts[tipo] += delta;
+        document.getElementById(`qtd-${tipo}`).innerText = counts[tipo];
+      }
+    }
+
+    finalizarBtn.addEventListener('click', () => {
+      const total = Object.values(counts).reduce((a, b) => a + b);
+      if (total === 0) {
+        alert('Selecione pelo menos um ticket.');
+        return;
+      }
+      mudarInterface(2);
+    });
+
+    function mostrarPix() {
+      document.getElementById('pixDiv').style.display = 'block';
+      document.getElementById('cartaoDiv').style.display = 'none';
+    }
+
+    function mostrarCartao() {
+      document.getElementById('pixDiv').style.display = 'none';
+      document.getElementById('cartaoDiv').style.display = 'block';
+    }
+
+    function copiarPix() {
+      meusTickets.dejejum += counts.dejejum;
+      meusTickets.almoco += counts.almoco;
+      meusTickets.janta += counts.janta;
+      counts.dejejum = counts.almoco = counts.janta = 0;
+      atualizarMeusTickets();
+      mudarInterface(3);
+    }
+
+    function confirmarCartao() {
+      meusTickets.dejejum += counts.dejejum;
+      meusTickets.almoco += counts.almoco;
+      meusTickets.janta += counts.janta;
+      counts.dejejum = counts.almoco = counts.janta = 0;
+      atualizarMeusTickets();
+      mudarInterface(3);
+    }
+
+    function voltarParaTickets() {
+      mudarInterface(1);
+      setTimeout(() => {
+        mudarInterface(1);
+        meusTicketsBtn.classList.add('active');
+        meusTicketsPanel.style.display = 'block';
+      }, 100);
+    }
+  </script>
+</body>
+</html>
